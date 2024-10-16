@@ -1,7 +1,5 @@
 import tkinter as tk
 
-from Button import texto
-
 
 def saludo():
     saludar.config(text = "¡Hola "+entrada.get()+", buenos días")
