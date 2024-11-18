@@ -1,17 +1,18 @@
-from logging import exception
-from tkinter import Image
+from PIL import Image, ImageTk
 from urllib import response
-
 import requests
 import io
 
 def descargar_imagen(url, size):
-    url = requests.get("https://upload.wikimedia.org/wikipedia/en/9/9f/Hellsingalucard.png",size=43)
     try:
         response = requests.get(url)
         response.raise_for_status()
 
-        return print()
+        image = Image.open(io.BytesIO(response.content))
+        image = image.resize(size, Image.LANCZOS)
+        image_tk = ImageTk.PhotoImage(image)
+
+        return image_tk
 
     except requests.exceptions.RequestException as e:
         print(f"Error al descargar la imagen desde la URL: {url}")
