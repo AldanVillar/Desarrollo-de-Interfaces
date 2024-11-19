@@ -62,7 +62,7 @@ class GameModel:
             "difficulty": self.difficulty,
             "moves": self.moves,
             "time": end_time,
-            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            "date": datetime.now()
         }
         scores = self.load_scores()
         if self.difficulty not in scores:
