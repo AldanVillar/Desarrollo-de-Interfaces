@@ -2,16 +2,11 @@ import tkinter as tk
 from modelo import GameModel
 from controlador import GameController
 
-if __name__ == "__main__":
-    GameController = GameController
-    GameModel = GameModel
+class Main:
     root = tk.Tk()
-    root.title("Ventana")
-    root.geometry("300x400")
-
-    label = tk.Label(root, text="Visualizador de notas")
-    label.pack()
-    entrada = tk.Entry(root, width=30)
-    entrada.pack()
-
+    controller = GameController(root)
+    gameModel = GameModel(1,"Player")
     root.mainloop()
+
+if __name__ == "__main__":
+    Main()
