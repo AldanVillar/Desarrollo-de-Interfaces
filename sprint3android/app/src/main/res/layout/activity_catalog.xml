@@ -10,6 +10,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="Navegar al detalle"
         android:id="@+id/navegarDetalle"
         app:layout_constraintTop_toTopOf="parent"
