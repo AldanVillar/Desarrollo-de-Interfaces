@@ -12,7 +12,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class CatalogActivity extends AppCompatActivity {
-    Context context = this;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,8 +27,8 @@ public class CatalogActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent myIntent = new Intent(context, DetailActivity.class);
-                context.startActivity(myIntent);
+                Intent intent = new Intent(CatalogActivity.this, DetailActivity.class);
+                startActivity(intent);
             }
         });
     }
