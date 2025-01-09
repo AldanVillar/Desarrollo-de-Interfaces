@@ -42,4 +42,6 @@ dependencies {
     implementation libs.glide.v4151
     annotationProcessor libs.compiler.v4151
     implementation libs.glide.transformations
+    implementation 'androidx.navigation:navigation-fragment:2.8.5'
+    implementation 'androidx.navigation:navigation-ui:2.8.5'
 }
