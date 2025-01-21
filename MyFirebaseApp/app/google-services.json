@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "792264194961",
+    "firebase_url": "https://myfirebaseapp-7ebfc-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "myfirebaseapp-7ebfc",
+    "storage_bucket": "myfirebaseapp-7ebfc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:792264194961:android:83ab83a63c6adf1c013830",
+        "android_client_info": {
+          "package_name": "com.example.myfirebaseapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-Ez2tEiz0M5HaTqAMxpY13FCz0VuRS0Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
