@@ -21,8 +21,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 public class DashboardActivity extends AppCompatActivity {
-    private TextView titleView, descriptionView;
-    private ImageView imageView;
+    private TextView tituloView, descripcionView;
+    private ImageView imagenView;
     private Button logoutButton;
 
     @Override
@@ -30,22 +30,22 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        titleView = findViewById(R.id.textViewTitle);
-        descriptionView = findViewById(R.id.textViewDescription);
-        imageView = findViewById(R.id.imageView);
+        tituloView = findViewById(R.id.textViewTitle);
+        descripcionView = findViewById(R.id.textViewDescription);
+        imagenView = findViewById(R.id.imageView);
         logoutButton = findViewById(R.id.buttonLogout);
 
-        DatabaseReference database = FirebaseDatabase.getInstance().getReference("items");
-        database.child("item1").addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference("productos");
+        database.child("producto1").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                String title = snapshot.child("title").getValue(String.class);
-                String description = snapshot.child("description").getValue(String.class);
-                String imageUrl = snapshot.child("image").getValue(String.class);
+                String titulo = snapshot.child("titulo").getValue(String.class);
+                String descripcion = snapshot.child("descripcion").getValue(String.class);
+                String imagenUrl = snapshot.child("imagen").getValue(String.class);
 
-                titleView.setText(title);
-                descriptionView.setText(description);
-                Picasso.get().load(imageUrl).into(imageView);
+                tituloView.setText(titulo);
+                descripcionView.setText(descripcion);
+                Picasso.get().load(imagenUrl).into(imagenView);
             }
 
             @Override
