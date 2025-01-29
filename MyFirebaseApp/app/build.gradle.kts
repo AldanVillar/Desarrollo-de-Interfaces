@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.myfirebaseapp"
-    compileSdk = 34
+    namespace = "com.example.mvvm"
+    compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.myfirebaseapp"
-        minSdk = 24
-        targetSdk = 34
+        applicationId = "com.example.mvvm"
+        minSdk = 26
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -31,6 +31,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    buildFeatures {
+        dataBinding = true
+    }
 }
 
 dependencies {
@@ -47,6 +50,9 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.picasso)
-
+    implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.8.7")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+    implementation ("androidx.recyclerview:recyclerview:1.4.0")
 
 }
