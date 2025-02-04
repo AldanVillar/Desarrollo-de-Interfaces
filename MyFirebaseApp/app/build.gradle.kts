@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.mvvm"
+    namespace = "com.example.myfirebaseapp"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.mvvm"
+        applicationId = "com.example.myfirebaseapp"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
