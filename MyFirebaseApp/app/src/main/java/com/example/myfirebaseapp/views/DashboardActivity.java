@@ -35,6 +35,7 @@ public class DashboardActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         btnLogout = findViewById(R.id.btnLogout);
         mAuth = FirebaseAuth.getInstance();
+        Button btnFavorites = findViewById(R.id.btn_favorites);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -74,6 +75,10 @@ public class DashboardActivity extends AppCompatActivity {
                 // Iniciar DetailActivity
                 startActivity(intent);
             }
+        });
+        btnFavorites.setOnClickListener(v -> {
+            Intent intent = new Intent(DashboardActivity.this, FavoriteActivity.class);
+            startActivity(intent);
         });
     }
 

@@ -13,7 +13,10 @@
         android:theme="@style/Theme.MyFirebaseApp"
         tools:targetApi="31">
         <activity
-            android:name="com.example.myfirebaseapp.views.LoginActivity"
+            android:name=".views.FavoriteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".views.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,25 +24,32 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.myfirebaseapp.views.RegisterActivity"/>
-        <activity android:name="com.example.myfirebaseapp.views.DashboardActivity"/>
-        <activity android:name="com.example.myfirebaseapp.views.DetailActivity"/>
-
-        <activity android:name="com.example.myfirebaseapp.models.Productos"
+        <activity android:name=".views.RegisterActivity" />
+        <activity android:name=".views.DashboardActivity" />
+        <activity android:name=".views.DetailActivity" />
+        <activity
+            android:name=".models.Productos"
             tools:ignore="Instantiatable" />
-        <activity android:name="com.example.myfirebaseapp.models.User"
+        <activity
+            android:name=".models.User"
             tools:ignore="Instantiatable" />
-        <activity android:name="com.example.myfirebaseapp.repositories.DashboardRepository"
+        <activity
+            android:name=".repositories.DashboardRepository"
             tools:ignore="Instantiatable" />
-        <activity android:name="com.example.myfirebaseapp.repositories.UserRepository"
+        <activity
+            android:name=".repositories.UserRepository"
             tools:ignore="Instantiatable" />
-        <activity android:name="com.example.myfirebaseapp.viewmodels.DashboardViewModel"
+        <activity
+            android:name=".viewmodels.DashboardViewModel"
             tools:ignore="Instantiatable" />
-        <activity android:name="com.example.myfirebaseapp.viewmodels.LoginViewModel"
+        <activity
+            android:name=".viewmodels.LoginViewModel"
             tools:ignore="Instantiatable" />
-        <activity android:name="com.example.myfirebaseapp.viewmodels.RegisterViewModel"
+        <activity
+            android:name=".viewmodels.RegisterViewModel"
             tools:ignore="Instantiatable" />
-        <activity android:name="com.example.myfirebaseapp.adapters.ProductosAdapter"
+        <activity
+            android:name=".adapters.ProductosAdapter"
             tools:ignore="Instantiatable" />
     </application>
 
