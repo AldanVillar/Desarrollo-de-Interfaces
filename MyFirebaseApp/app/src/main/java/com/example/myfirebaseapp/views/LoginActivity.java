@@ -41,9 +41,9 @@ public class LoginActivity extends AppCompatActivity {
         // Observar el estado de inicio de sesión
         loginViewModel.getLoginStatus().observe(this, isSuccess -> {
             if (isSuccess) {
-                // Si el inicio de sesión fue exitoso, mostrar mensaje y redirigir a DashboardActivity
+                // Si el inicio de sesión fue exitoso, mostrar mensaje y redirigir a MainActivity
                 Toast.makeText(LoginActivity.this, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();  // Finalizar la actividad de inicio de sesión para que no se pueda volver atrás

@@ -13,6 +13,18 @@
         android:theme="@style/Theme.MyFirebaseApp"
         tools:targetApi="31">
         <activity
+            android:name=".views.ProfileFragment"
+            android:exported="false" />
+        <activity
+            android:name=".views.FavoritesFragment"
+            android:exported="false" />
+        <activity
+            android:name=".views.DetailFragment"
+            android:exported="false" />
+        <activity
+            android:name=".views.DashboardFragment"
+            android:exported="false" />
+        <activity
             android:name=".views.MainActivity"
             android:exported="false" />
         <activity

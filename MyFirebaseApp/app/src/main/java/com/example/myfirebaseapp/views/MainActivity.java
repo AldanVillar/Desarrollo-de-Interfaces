@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (itemId == R.id.nav_dashboard) {
             fragment = new DashboardFragment();
         } else if (itemId == R.id.nav_favorites) {
-            fragment = new FavouritesFragment();
+            fragment = new FavoritesFragment();
         } else if (itemId == R.id.nav_profile) {
             fragment = new ProfileFragment();
         } else if (itemId == R.id.nav_logout) {
