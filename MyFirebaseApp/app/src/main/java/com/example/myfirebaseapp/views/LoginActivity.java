@@ -1,76 +1,61 @@
 package com.example.myfirebaseapp.views;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-
 import com.example.myfirebaseapp.R;
 import com.example.myfirebaseapp.viewmodels.LoginViewModel;
 
 public class LoginActivity extends AppCompatActivity {
-
-    private EditText etEmailLogin, etPasswordLogin;
-    private Button btnLogin, btnRegisterRedirect;
-    private ProgressBar progressBar;
     private LoginViewModel loginViewModel;
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        etEmailLogin = findViewById(R.id.etEmailLogin);
-        etPasswordLogin = findViewById(R.id.etPasswordLogin);
-        btnLogin = findViewById(R.id.btnLogin);
-        btnRegisterRedirect = findViewById(R.id.btnRegisterRedirect);
-        progressBar = findViewById(R.id.progressBar);
-
         loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
 
-        // Observar el estado del inicio de sesión
-        loginViewModel.getStatusMessage().observe(this, message -> {
-            Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
-        });
+        EditText emailEditText = findViewById(R.id.emailEditText);
+        EditText passwordEditText = findViewById(R.id.passwordEditText);
 
-        loginViewModel.getIsLoggingIn().observe(this, isLoggingIn -> {
-            if (isLoggingIn) {
-                progressBar.setVisibility(ProgressBar.VISIBLE);
-                btnLogin.setEnabled(false);
-            } else {
-                progressBar.setVisibility(ProgressBar.GONE);
-                btnLogin.setEnabled(true);
+        findViewById(R.id.loginButton).setOnClickListener(v -> {
+            String email = emailEditText.getText().toString();
+            String password = passwordEditText.getText().toString();
+
+            // Validar los campos de entrada
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(LoginActivity.this, "Por favor, ingrese un correo y una contraseña.", Toast.LENGTH_SHORT).show();
+                return;
             }
-        });
 
-        loginViewModel.getLoggedInUser().observe(this, user -> {
-            if (user != null) {
-                // Si el login es exitoso, redirigir a DashboardActivity
-                Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-                startActivity(intent);
-                finish(); // Finalizar LoginActivity
-            }
-        });
-
-        // Manejar botón de login
-        btnLogin.setOnClickListener(v -> {
-            String email = etEmailLogin.getText().toString().trim();
-            String password = etPasswordLogin.getText().toString().trim();
-
-            // Usar el ViewModel para iniciar sesión
+            // Intentar iniciar sesión con los datos proporcionados
             loginViewModel.loginUser(email, password);
         });
 
-        // Redirigir a Registro
-        btnRegisterRedirect.setOnClickListener(v -> {
+        // Observar el estado de inicio de sesión
+        loginViewModel.getLoginStatus().observe(this, isSuccess -> {
+            if (isSuccess) {
+                // Si el inicio de sesión fue exitoso, mostrar mensaje y redirigir a DashboardActivity
+                Toast.makeText(LoginActivity.this, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();  // Finalizar la actividad de inicio de sesión para que no se pueda volver atrás
+            } else {
+                // Si el inicio de sesión falló, mostrar un mensaje de error
+                Toast.makeText(LoginActivity.this, "Error en el inicio de sesión.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Acción del botón de registro
+        findViewById(R.id.registerButton).setOnClickListener(v -> {
+            // Redirigir a la actividad de registro
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
         });

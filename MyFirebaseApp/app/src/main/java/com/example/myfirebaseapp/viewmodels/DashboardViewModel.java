@@ -5,41 +5,34 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
 import com.example.myfirebaseapp.models.Productos;
 import com.example.myfirebaseapp.repositories.DashboardRepository;
 
 import java.util.List;
 
 public class DashboardViewModel extends AndroidViewModel {
-
-    private DashboardRepository repository;
-    private MutableLiveData<List<Productos>> productos = new MutableLiveData<>();
-    private MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    private final DashboardRepository dashboardRepository;
+    private final MutableLiveData<List<Productos>> Lproductos;
 
     public DashboardViewModel(Application application) {
         super(application);
-        repository = new DashboardRepository();
+        dashboardRepository = new DashboardRepository();
+        Lproductos = new MutableLiveData<>();
+        loadProductos();
     }
 
-    public LiveData<List<Productos>> getProductos() {
-        return productos;
+    private void loadProductos() {
+        dashboardRepository.getProductosFromDatabase().observeForever(productos ->
+                Lproductos.setValue(productos)
+        );
     }
 
-    public LiveData<String> getErrorMessage() {
-        return errorMessage;
+    public void toggleFavorite(Productos productos, boolean isFavorite) {
+        dashboardRepository.toggleFavorite(productos.getId(), isFavorite);
     }
 
-    public void loadProductos() {
-        repository.loadProductos(new DashboardRepository.ProductosCallback() {
-            @Override
-            public void onSuccess(List<Productos> productosList) {
-                productos.setValue(productosList);
-            }
-
-            @Override
-            public void onFailure(String errorMessage) {
-                DashboardViewModel.this.errorMessage.setValue(errorMessage);
-            }
-        });
+    public LiveData<List<Productos>> getLproductos() {
+        return Lproductos;
     }
 }

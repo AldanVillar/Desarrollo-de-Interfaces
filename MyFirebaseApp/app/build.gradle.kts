@@ -11,6 +11,7 @@ android {
     defaultConfig {
         applicationId = "com.example.myfirebaseapp"
         minSdk = 26
+        //noinspection EditedTargetSdkVersion
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -54,5 +55,4 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.8.7")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
     implementation ("androidx.recyclerview:recyclerview:1.4.0")
-
 }

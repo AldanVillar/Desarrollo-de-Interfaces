@@ -1,15 +1,16 @@
 package com.example.myfirebaseapp.views;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 
 import com.example.myfirebaseapp.R;
 import com.example.myfirebaseapp.adapters.ProductosAdapter;
@@ -17,75 +18,109 @@ import com.example.myfirebaseapp.models.Productos;
 import com.example.myfirebaseapp.viewmodels.DashboardViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.List;
-
 public class DashboardActivity extends AppCompatActivity {
-
     private RecyclerView recyclerView;
-    private ProductosAdapter productosAdapter;
-    private FirebaseAuth mAuth;
-    private Button btnLogout;
+    private ProductosAdapter adapter;
     private DashboardViewModel dashboardViewModel;
+    private FirebaseAuth mAuth;
+    private LinearLayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Aplicar el tema guardado
+        SharedPreferences sharedPreferences = getSharedPreferences("ThemePrefs", MODE_PRIVATE);
+        boolean isDarkMode = sharedPreferences.getBoolean("isDarkMode", true);
+        AppCompatDelegate.setDefaultNightMode(
+                isDarkMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO
+        );
+
         setContentView(R.layout.activity_dashboard);
 
+        initializeViews();
+        setupViewModel();
+        setupRecyclerView();
+        observeProductos();
+        setupButtons();
+    }
+
+    private void initializeViews() {
         recyclerView = findViewById(R.id.recyclerView);
-        btnLogout = findViewById(R.id.btnLogout);
-        mAuth = FirebaseAuth.getInstance();
-        Button btnFavorites = findViewById(R.id.btn_favorites);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+    }
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        // Iniciar adaptador vacío
-        productosAdapter = new ProductosAdapter(this, null);
-        recyclerView.setAdapter(productosAdapter);
-
-        // Usamos ViewModelProvider para obtener el ViewModel
+    private void setupViewModel() {
         dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
+        mAuth = FirebaseAuth.getInstance();
+    }
 
-        // Observar el ViewModel para obtener los cambios en la lista de productos
-        dashboardViewModel.getProductos().observe(this, new Observer<List<Productos>>() {
-            @Override
-            public void onChanged(List<Productos> productos) {
-                productosAdapter.setProductos(productos);
+    private void setupRecyclerView() {
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+    }
+
+    private void observeProductos() {
+        dashboardViewModel.getLproductos().observe(this, Lproductos -> {
+            if (Lproductos != null && !Lproductos.isEmpty()) {
+                if (adapter == null) {
+                    adapter = new ProductosAdapter(
+                            Lproductos,
+                            this::onProductosClick,
+                            (productos, isFavorite) -> dashboardViewModel.toggleFavorite(productos, isFavorite)
+                    );
+                    recyclerView.setAdapter(adapter);
+                } else {
+                    adapter.updateProductos(Lproductos);
+                }
+            } else {
+                Toast.makeText(DashboardActivity.this, "No se encontraron recetas", Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
-        // Cargar los productos desde Firebase
-        dashboardViewModel.loadProductos();
+    private void setupButtons() {
+        Button logoutButton = findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(v -> performLogout());
 
-        // Configurar el botón de Logout
-        btnLogout.setOnClickListener(v -> logoutUser());
+        Button themeButton = findViewById(R.id.themeToggleButton);
+        themeButton.setOnClickListener(v -> toggleTheme());
 
-        // Configurar el click en cada item del RecyclerView
-        productosAdapter.setOnItemClickListener(new ProductosAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Productos productos) {
-                // Abrir DetailActivity
-                Intent intent = new Intent(DashboardActivity.this, DetailActivity.class);
-
-                // Pasar los datos
-                intent.putExtra("title", productos.getTitulo());
-                intent.putExtra("description", productos.getDescripcion());
-                intent.putExtra("imageUrl", productos.getImagen());
-
-                // Iniciar DetailActivity
-                startActivity(intent);
-            }
-        });
-        btnFavorites.setOnClickListener(v -> {
-            Intent intent = new Intent(DashboardActivity.this, FavoriteActivity.class);
+        // Añadir el botón para la pantalla de favoritos
+        Button favoritesButton = findViewById(R.id.favoritesButton);
+        favoritesButton.setOnClickListener(v -> {
+            // Intent para abrir la actividad de Favoritos
+            Intent intent = new Intent(DashboardActivity.this, FavoritesActivity.class);
             startActivity(intent);
         });
     }
 
-    private void logoutUser() {
+    private void performLogout() {
         mAuth.signOut();
         Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
+    }
+
+    private void onProductosClick(Productos productos) {
+        Intent intent = new Intent(DashboardActivity.this, DetailActivity.class);
+        intent.putExtra("title", productos.getTitulo());
+        intent.putExtra("description", productos.getDescripcion());
+        intent.putExtra("imageUrl", productos.getImagen());
+        startActivity(intent);
+    }
+
+    private void toggleTheme() {
+        SharedPreferences sharedPreferences = getSharedPreferences("ThemePrefs", MODE_PRIVATE);
+        boolean isDarkMode = sharedPreferences.getBoolean("isDarkMode", true);
+
+        AppCompatDelegate.setDefaultNightMode(
+                isDarkMode ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES
+        );
+
+        sharedPreferences.edit().putBoolean("isDarkMode", !isDarkMode).apply();
+        recreate();
     }
 }

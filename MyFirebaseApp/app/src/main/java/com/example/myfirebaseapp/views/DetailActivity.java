@@ -1,82 +1,58 @@
 package com.example.myfirebaseapp.views;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import com.example.myfirebaseapp.R;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private TextView tvTitle, tvDescription;
-    private ImageView ivImage;
+    private TextView titleTextView;
+    private TextView descriptionTextView;
+    private ImageView imageView;
+    private Button backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        // Referencias a los elementos de la interfaz
-        tvTitle = findViewById(R.id.tvTitle);
-        tvDescription = findViewById(R.id.tvDescription);
-        ivImage = findViewById(R.id.ivImage);
+        // Inicialización de las vistas
+        titleTextView = findViewById(R.id.detailTitleTextView);
+        descriptionTextView = findViewById(R.id.detailDescriptionTextView);
+        imageView = findViewById(R.id.detailImageView);
+        backButton = findViewById(R.id.backButton);
 
-        // Recibir los datos
-        Intent intent = getIntent();
-        if (intent != null) {
-            String title = intent.getStringExtra("title");
-            String description = intent.getStringExtra("description");
-            String imageUrl = intent.getStringExtra("imageUrl");
+        // Obtener los datos del Intent que se pasó desde DashboardActivity
+        String title = getIntent().getStringExtra("title");
+        String description = getIntent().getStringExtra("description");
+        String imageUrl = getIntent().getStringExtra("imageUrl");
 
-            // Establecer los valores en la interfaz
-            tvTitle.setText(title);
-            tvDescription.setText(description);
+        // Configurar los datos en las vistas
+        titleTextView.setText(title);
+        descriptionTextView.setText(description);
 
-            // Usar Picasso para cargar la imagen desde la URL
-            if (imageUrl != null && !imageUrl.isEmpty()) {
-                Picasso.get().load(imageUrl).into(ivImage);
-            }
+        // Usar Picasso para cargar la imagen desde la URL (si la URL es válida)
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Picasso.get().load(imageUrl).into(imageView);
+        } else {
+            // Si no hay imagen, puedes usar una imagen por defecto
+            imageView.setImageResource(R.drawable.ic_launcher_foreground);
         }
-        FloatingActionButton fabFavorite = findViewById(R.id.fab_favorite);
-        String itemId = "item_id"; // Este debe ser el ID único del producto/item
 
-        // Cargar estado de favorito
-        DatabaseReference userFavoritesRef = FirebaseDatabase.getInstance().getReference("usuarios")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("favoritos");
+        // Configurar el comportamiento del botón de retroceso
+        backButton.setOnClickListener(v -> onBackPressed());
+    }
 
-        userFavoritesRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                boolean isFavorite = false;
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    if (snapshot.getValue(String.class).equals(itemId)) {
-                        isFavorite = true;
-                        break;
-                    }
-                }
-                fabFavorite.setImageResource(isFavorite ? R.drawable.ic_favorite : R.drawable.ic_favorite_border);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
-        // Alternar estado de favorito al hacer clic
-        fabFavorite.setOnClickListener(view -> {
-            toggleFavorite(itemId);  // Usar el método que escribimos anteriormente
-        });
+    // Método para manejar el clic del botón "Volver"
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();  // Finaliza esta actividad y regresa a la anterior (DashboardActivity)
     }
 }

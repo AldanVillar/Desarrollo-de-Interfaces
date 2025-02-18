@@ -1,59 +1,55 @@
 package com.example.myfirebaseapp.viewmodels;
 
-import android.app.Application;
-import android.text.TextUtils;
-
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
+import com.example.myfirebaseapp.models.User;
 import com.example.myfirebaseapp.repositories.UserRepository;
 
-public class RegisterViewModel extends AndroidViewModel {
+public class RegisterViewModel extends ViewModel {
+    private final UserRepository userRepository;
+    private final MutableLiveData<Boolean> registrationResult = new MutableLiveData<>();
 
-    private UserRepository userRepository;
-    private MutableLiveData<String> statusMessage;
-    private MutableLiveData<Boolean> isRegistering;
-
-    public RegisterViewModel(Application application) {
-        super(application);
+    public RegisterViewModel() {
         userRepository = new UserRepository();
-        statusMessage = new MutableLiveData<>();
-        isRegistering = new MutableLiveData<>(false);
     }
 
-    public LiveData<String> getStatusMessage() {
-        return statusMessage;
+    public LiveData<Boolean> getRegistrationResult() {
+        return registrationResult;
     }
 
-    public LiveData<Boolean> getIsRegistering() {
-        return isRegistering;
-    }
-
-    // Registro
-    public void registerUser(String email, String password, String confirmPassword, String fullName, String phone, String address) {
-        // Validar datos
-        if (TextUtils.isEmpty(fullName) || TextUtils.isEmpty(email) || TextUtils.isEmpty(password) ||
-                TextUtils.isEmpty(confirmPassword) || TextUtils.isEmpty(phone) || TextUtils.isEmpty(address)) {
-            statusMessage.setValue("Por favor, rellene todos los campos.");
+    public void registerUser(String fullName, String email, String password, String confirmPassword, String phone, String address) {
+        // Verifica que los campos no estén vacíos
+        if (fullName.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || phone.isEmpty() || address.isEmpty()) {
+            registrationResult.setValue(false); // Registro fallido por campos vacíos
             return;
         }
 
+        // Verifica que las contraseñas coincidan
         if (!password.equals(confirmPassword)) {
-            statusMessage.setValue("Las contraseñas no coinciden.");
+            registrationResult.setValue(false); // Las contraseñas no coinciden
             return;
         }
 
-        isRegistering.setValue(true);
+        // Verifica que el correo tenga un formato válido
+        if (!email.contains("@")) {
+            registrationResult.setValue(false); // Formato de correo incorrecto
+            return;
+        }
 
-        // Llamar al repositorio para registrar al usuario
-        userRepository.registerUser(email, password, fullName, phone, address, task -> {
-            if (task.isSuccessful()) {
-                statusMessage.setValue("Registro exitoso");
-            } else {
-                statusMessage.setValue("Error en el registro: " + task.getException().getMessage());
-            }
-            isRegistering.setValue(false); // Terminar registro
+        // Verifica que la contraseña tenga al menos 6 caracteres
+        if (password.length() < 6) {
+            registrationResult.setValue(false); // Contraseña demasiado corta
+            return;
+        }
+
+        // Crea un objeto User con los datos de registro
+        User user = new User(null, fullName, email, phone, address);
+
+        // Llamada al repositorio para registrar al usuario
+        userRepository.registerUser(email, password, user).observeForever(success -> {
+            registrationResult.setValue(success); // Actualiza el estado del registro con el resultado del repositorio
         });
     }
 }
